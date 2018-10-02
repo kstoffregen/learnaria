@@ -70,16 +70,14 @@
 					.removeClass('pressed')
 					.attr({
 						"aria-pressed": false
-					})
-					;
+					});
 				plugin.options.isPressed = false;
 			} else {
 				$me
 					.addClass('pressed')
 					.attr({
 						"aria-pressed": true
-					})
-	        		;
+					});
 				plugin.options.isPressed = true;
 			}
 			
