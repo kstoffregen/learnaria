@@ -45,8 +45,6 @@ var pluginName = "ik_suggest",
 		
 		this.list = $('<ul/>').addClass('suggestions');
 		
-		$elem.after(this.notify, this.list);
-	
 		this.notify = $('<div/>') // add hidden live region to be used by screen readers
 		    .addClass('ik_readersonly')
 		    .attr({
@@ -54,6 +52,8 @@ var pluginName = "ik_suggest",
 		        'aria-live': 'polite'
 		    });
 
+		$elem.after(this.notify, this.list);
+	
 	};
 
 	
