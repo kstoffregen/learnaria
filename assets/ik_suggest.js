@@ -56,7 +56,7 @@ var pluginName = "ik_suggest",
 	};
 	
 	/** 
-	 * Handles kedown event on text field.
+	 * Handles keydown event on text field.
 	 * 
 	 * @param {object} event - Keyboard event.
 	 * @param {object} event.data - Event data.
@@ -72,17 +72,13 @@ var pluginName = "ik_suggest",
 			
 			case ik_utils.keys.tab:
 			case ik_utils.keys.esc:
-								
-				plugin.list.empty().hide(); // empty list and hide suggestion box
-					
+				plugin.list.empty().hide(); // empty list and hide suggestion box					
 				break;
 			
 			case ik_utils.keys.enter:
-				
 				selected = plugin.list.find('.selected');
 				plugin.element.val( selected.text() ); // set text field value to the selected option
 				plugin.list.empty().hide(); // empty list and hide suggestion box
-				
 				break;
 				
 		}
@@ -113,7 +109,7 @@ var pluginName = "ik_suggest",
 		switch (event.keyCode) {
 		    case ik_utils.keys.down: // select next suggestion from list
 		        selected = plugin.list.find('.selected');
-		    if(selected.length) {
+		    	if(selected.length) {
 		            msg = selected.removeClass('selected').next().addClass('selected').text();
 		        } else {
 		            msg = plugin.list.find('li:first').addClass('selected').text();
@@ -131,7 +127,7 @@ var pluginName = "ik_suggest",
 
 	    	default: // get suggestions based on user input
 
-			suggestions = plugin.getSuggestions(plugin.options.source, $me.val());
+				suggestions = plugin.getSuggestions(plugin.options.source, $me.val());
 				
 				if (suggestions.length) {
 					plugin.list.show();
@@ -147,7 +143,7 @@ var pluginName = "ik_suggest",
 					.appendTo(plugin.list);
 				}
 
-			break;
+			// break;
     	}
 	};
 	
