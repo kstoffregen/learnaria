@@ -2,6 +2,8 @@
  
 var pluginName = "ik_suggest",
 	defaults = {
+		// Define some instructions to make it clear there will be suggestions appearing when text is entered into the text input field.
+		'instructions': "As you start typing the application might suggest similar search terms. Use up and down arrow keys to select a suggested search string.",
 		'minLength': 2,
 		'maxResults': 10,
 		'source': []
@@ -42,10 +44,16 @@ var pluginName = "ik_suggest",
 			.on('keyup', {'plugin': plugin}, plugin.onKeyUp) // add keyup event
 			.on('focusout', {'plugin': plugin}, plugin.onFocusOut);  // add focusout event
 		
+		this.notify = $('<div/>') // add hidden live region to be used by screen readers
+		    .addClass('ik_readersonly')
+		    .attr({
+		        'role': 'region',
+		        'aria-live': 'polite'
+		    });
+
 		this.list = $('<ul/>').addClass('suggestions');
 		
 		$elem.after(this.notify, this.list);
-				
 	};
 	
 	/** 
@@ -96,6 +104,34 @@ var pluginName = "ik_suggest",
 		plugin = event.data.plugin;
 		$me = $(event.currentTarget);
 		
+		/*
+		The most significant effort in making the suggestion box accessible is adding keyboard operability. 
+		In our case, we’ll add Up and Down Arrow operability to the list box. Create a switch that captures the keypress event. 
+		If it’s a Down Arrow, select the next item down in the list. If it’s an Up Arrow, select the previous item. 
+		If it’s any character key, enter the value in the text field. Add this to the onKeyUp() function, 
+		while integrating the existing functionality in the function into the default for the switch statement.
+		*/
+		switch (event.keyCode) {
+		    case ik_utils.keys.down: // select next suggestion from list
+		        selected = plugin.list.find('.selected');
+		    if(selected.length) {
+		            msg = selected.removeClass('selected').next().addClass('selected').text();
+		        } else {
+		            msg = plugin.list.find('li:first').addClass('selected').text();
+		        }
+		        plugin.notify.text(msg); // add suggestion text to live region to be read by screen reader
+		        break;
+
+		    case ik_utils.keys.up: // select previous suggestion from list
+		        selected = plugin.list.find('.selected');
+		        if(selected.length) {
+		            msg = selected.removeClass('selected').prev().addClass('selected').text();
+		        }
+		        plugin.notify.text(msg);  // add suggestion text to live region to be read by screen reader
+		        break;
+
+	    	default: // get suggestions based on user input
+
 			suggestions = plugin.getSuggestions(plugin.options.source, $me.val());
 				
 				if (suggestions.length) {
@@ -111,6 +147,9 @@ var pluginName = "ik_suggest",
 					.on('click', {'plugin': plugin}, plugin.onOptionClick) // add click event handler
 					.appendTo(plugin.list);
 				}
+
+			break;
+    	}
 	};
 	
 	/** 
@@ -174,6 +213,10 @@ var pluginName = "ik_suggest",
 					r.push(arr[i].replace(regex, '<span>$1</span>'));
 				}
 			}
+		}
+
+		if (r.length) { // add instructions to hidden live area
+		    this.notify.text('Suggestions are available for this field. Use up and down arrows to select a suggestion and enter key to use it.');
 		}
 
 		return r;
