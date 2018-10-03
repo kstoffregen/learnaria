@@ -2,7 +2,6 @@
  
 var pluginName = "ik_suggest",
 	defaults = {
-		// Define some instructions to make it clear there will be suggestions appearing when text is entered into the text input field.
 		'instructions': "As you start typing the application might suggest similar search terms. Use up and down arrow keys to select a suggested search string.",
 		'minLength': 2,
 		'maxResults': 10,
