@@ -145,7 +145,7 @@ var pluginName = "ik_suggest",
 					.appendTo(plugin.list);
 				}
 
-			// break;
+			break;
     	}
 	};
 	
