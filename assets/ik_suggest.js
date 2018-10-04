@@ -2,7 +2,6 @@
  
 var pluginName = "ik_suggest",
 	defaults = {
-		'instructions': "As you start typing the application might suggest similar search terms. Use up and down arrow keys to select a suggested search string.",
 		'minLength': 2,
 		'maxResults': 10,
 		'source': []
@@ -34,29 +33,42 @@ var pluginName = "ik_suggest",
 		
 		plugin = this;
 		
-		$elem = this.element
+		plugin.notify = $('<div/>') // add hidden live region to be used by screen readers
+			.addClass('ik_readersonly');
+		
+		$elem = plugin.element
 			.attr({
 				'autocomplete': 'off'
 			})
 			.wrap('<span class="ik_suggest"></span>') 
+			.on('focus', {'plugin': plugin}, plugin.onFocus)
 			.on('keydown', {'plugin': plugin}, plugin.onKeyDown) // add keydown event
 			.on('keyup', {'plugin': plugin}, plugin.onKeyUp) // add keyup event
 			.on('focusout', {'plugin': plugin}, plugin.onFocusOut);  // add focusout event
 		
-		this.notify = $('<div/>') // add hidden live region to be used by screen readers
-		    .addClass('ik_readersonly')
-		    .attr({
-		        'role': 'region',
-		        'aria-live': 'polite'
-		    });
-
-		this.list = $('<ul/>').addClass('suggestions');
+		plugin.list = $('<ul/>').addClass('suggestions');
 		
-		$elem.after(this.notify, this.list);
+		$elem.after(plugin.notify, plugin.list);
+				
 	};
 	
 	/** 
-	 * Handles keydown event on text field.
+	 * Handles focus event on text field.
+	 * 
+	 * @param {object} event - Keyboard event.
+	 * @param {object} event.data - Event data.
+	 * @param {object} event.data.plugin - Reference to plugin.
+	 */
+	Plugin.prototype.onFocus = function (event) {
+		
+		var plugin;
+		
+		plugin = event.data.plugin;
+
+	};
+	
+	/** 
+	 * Handles kedown event on text field.
 	 * 
 	 * @param {object} event - Keyboard event.
 	 * @param {object} event.data - Event data.
@@ -72,13 +84,17 @@ var pluginName = "ik_suggest",
 			
 			case ik_utils.keys.tab:
 			case ik_utils.keys.esc:
-				plugin.list.empty().hide(); // empty list and hide suggestion box					
+								
+				plugin.list.empty().hide(); // empty list and hide suggestion box
+					
 				break;
 			
 			case ik_utils.keys.enter:
+				
 				selected = plugin.list.find('.selected');
 				plugin.element.val( selected.text() ); // set text field value to the selected option
 				plugin.list.empty().hide(); // empty list and hide suggestion box
+				
 				break;
 				
 		}
@@ -98,53 +114,22 @@ var pluginName = "ik_suggest",
 		
 		plugin = event.data.plugin;
 		$me = $(event.currentTarget);
-		
-		/*
-		The most significant effort in making the suggestion box accessible is adding keyboard operability. 
-		In our case, we’ll add Up and Down Arrow operability to the list box. Create a switch that captures the keypress event. 
-		If it’s a Down Arrow, select the next item down in the list. If it’s an Up Arrow, select the previous item. 
-		If it’s any character key, enter the value in the text field. Add this to the onKeyUp() function, 
-		while integrating the existing functionality in the function into the default for the switch statement.
-		*/
-		switch (event.keyCode) {
-		    case ik_utils.keys.down: // select next suggestion from list
-		        selected = plugin.list.find('.selected');
-		    	if(selected.length) {
-		            msg = selected.removeClass('selected').next().addClass('selected').text();
-		        } else {
-		            msg = plugin.list.find('li:first').addClass('selected').text();
-		        }
-		        plugin.notify.text(msg); // add suggestion text to live region to be read by screen reader
-		        break;
-
-		    case ik_utils.keys.up: // select previous suggestion from list
-		        selected = plugin.list.find('.selected');
-		        if(selected.length) {
-		            msg = selected.removeClass('selected').prev().addClass('selected').text();
-		        }
-		        plugin.notify.text(msg);  // add suggestion text to live region to be read by screen reader
-		        break;
-
-	    	default: // get suggestions based on user input
-
+			
+				plugin.list.empty();
+				
 				suggestions = plugin.getSuggestions(plugin.options.source, $me.val());
 				
-				if (suggestions.length) {
+				if (suggestions.length > 1) {
+					for(var i = 0, l = suggestions.length; i < l; i++) {
+						$('<li/>').html(suggestions[i])
+						.on('click', {'plugin': plugin}, plugin.onOptionClick) // add click event handler
+						.appendTo(plugin.list);
+					}
 					plugin.list.show();
 				} else {
 					plugin.list.hide();
 				}
-				
-				plugin.list.empty();
-				
-				for(var i = 0, l = suggestions.length; i < l; i++) {
-					$('<li/>').html(suggestions[i])
-					.on('click', {'plugin': plugin}, plugin.onOptionClick) // add click event handler
-					.appendTo(plugin.list);
-				}
 
-				break;
-    	}
 	};
 	
 	/** 
@@ -208,10 +193,6 @@ var pluginName = "ik_suggest",
 					r.push(arr[i].replace(regex, '<span>$1</span>'));
 				}
 			}
-		}
-
-		if (r.length) { // add instructions to hidden live area
-		    this.notify.text('Suggestions are available for this field. Use up and down arrows to select a suggestion and enter key to use it.');
 		}
 
 		return r;
