@@ -1,7 +1,11 @@
 ;(function ( $, window, document, undefined ) {
  
+ 	/*	Define some instructions to make it clear there will be 
+ 		suggestions appearing when text is entered into the text input field. */
+
 var pluginName = "ik_suggest",
 	defaults = {
+        'instructions': "As you start typing the application might suggest similar search terms. Use up and down arrow keys to select a suggested search string.", 
 		'minLength': 2,
 		'maxResults': 10,
 		'source': []
@@ -32,9 +36,19 @@ var pluginName = "ik_suggest",
 		var $elem, plugin;
 		
 		plugin = this;
+
+		/*	Within the init() function, create a <div> to use as a live region, 
+			adding aria-live="polite" to announce the list usage instructions 
+			defined above when the text field receives focus. Also give it a 
+			role="region" so it can be found in the landmarks list. */
 		
 		plugin.notify = $('<div/>') // add hidden live region to be used by screen readers
-			.addClass('ik_readersonly');
+			.addClass('ik_readersonly')
+			.attr({
+		        'role': 'region',
+		        'aria-live': 'polite'
+		    })
+		;
 		
 		$elem = plugin.element
 			.attr({
@@ -64,6 +78,12 @@ var pluginName = "ik_suggest",
 		var plugin;
 		
 		plugin = event.data.plugin;
+
+		/*	When the suggestion box receives focus, generate the instruction for it by adding the 
+			notify() function to the onFocus() function to produce a live region with the instruction text, 
+			that reads automatically when a screen reader encounters suggestion box text field. */
+
+		plugin.notify.text(plugin.options.instructions);
 
 	};
 	
@@ -114,7 +134,32 @@ var pluginName = "ik_suggest",
 		
 		plugin = event.data.plugin;
 		$me = $(event.currentTarget);
-			
+
+		/*	Create a switch that captures the keypress event. If it’s a Down Arrow, 
+			select the next item down in the list. If it’s an Up Arrow, select the previous item. 
+			If it’s any character key, enter the value in the text field. Add this to the 
+			onKeyUp() function, while integrating the existing functionality in the 
+			function into the default for the switch statement. */
+
+		switch (event.keyCode) {
+    		case ik_utils.keys.down: // select next suggestion from list   
+                selected = plugin.list.find('.selected');  
+                if(selected.length) {
+                    msg = selected.removeClass('selected').next().addClass('selected').text();
+                } else {
+                    msg = plugin.list.find('li:first').addClass('selected').text();
+                }
+                plugin.notify.text(msg); // add suggestion text to live region to be read by screen reader
+                break;
+            case ik_utils.keys.up: // select previous suggestion from list
+                selected = plugin.list.find('.selected');
+                if(selected.length) {
+                    msg = selected.removeClass('selected').prev().addClass('selected').text();
+                }
+                plugin.notify.text(msg);  // add suggestion text to live region to be read by screen reader    
+                break;
+           
+            default: // get suggestions based on user input		
 				plugin.list.empty();
 				
 				suggestions = plugin.getSuggestions(plugin.options.source, $me.val());
@@ -129,7 +174,8 @@ var pluginName = "ik_suggest",
 				} else {
 					plugin.list.hide();
 				}
-
+			break;
+		}
 	};
 	
 	/** 
@@ -194,6 +240,13 @@ var pluginName = "ik_suggest",
 				}
 			}
 		}
+
+		/*	Provide additional instructions when the suggestion box is populated, 
+			adding to the getSuggestions() function. */
+
+		if (r.length > 1) { // add instructions to hidden live area
+	        this.notify.text('Suggestions are available for this field. Use up and down arrows to select a suggestion and enter key to use it.');
+	    }
 
 		return r;
 		
