@@ -34,6 +34,7 @@
 		if(tip.length > 0) {
 			
 			/*
+				Note:
 				Define the tooltip with role="tooltip". Hide the tooltip by default with aria-hidden="true". 
 				Also add a live region with aria-live="polite" so screen readers automatically read the tooltip 
 				when it appears. Note that the WAI-ARIA 1.1 best practices recommend using aria-describedby 
@@ -52,8 +53,10 @@
 				});
 			
 			/*
-				Add keyboard focus to the element the tooltip belongs to with tabindex="0", and 
-				add focus to .on('mouseover') so both a mouse hover and keyboard focus open the tooltip.
+				Note:
+				Add keyboard focus to the element the tooltip belongs to with tabindex="0", 
+				and add focus to .on('mouseover') so both a mouse hover 
+				and keyboard focus open the tooltip.
 			*/
 			$elem
 				.attr({
@@ -81,7 +84,9 @@
 					}
 					
 					/*
-						Add aria-hidden="false" so the hidden-by-default tooltip becomes visible when the mouse hover or keyboard focus occurs.
+						Note:
+						Add aria-hidden="false" so the hidden-by-default tooltip 
+						becomes visible when the mouse hover or keyboard focus occurs.
 					*/
 					$tooltip // position and show tooltip
 						.attr({
@@ -94,8 +99,10 @@
 						.addClass('visible');
 				})
 				/*
-					Add aria-hidden="true" to be sure the tooltip is hidden from screen readers, should a mouseout event close the tooltip, 
-					adding it to .on(mouseout) chained to the element ($elem) definition.
+					Note:
+					Add aria-hidden="true" to be sure the tooltip is hidden from screen readers, 
+					should a mouseout event close the tooltip, adding it to .on(mouseout) 
+					chained to the element ($elem) definition.
 				*/
 				.on('mouseout', function(event) {
 					
@@ -110,8 +117,10 @@
 										
 				})
 				/*
-					As a keyboard equivalent for the .on(mouseout) described above, .on(blur) is chained to the $elem element and 
-					within it aria-hidden="true" hides the tooltip again, if the mouse pointer is not over the element.
+					Note:
+					As a keyboard equivalent for the .on(mouseout) described above, .on(blur) 
+					is chained to the $elem element and within it aria-hidden="true" hides 
+					the tooltip again, if the mouse pointer is not over the element.
 				*/
 				.on('blur', function(event) {              
 				    if (!$tooltip.hasClass('mouseover') ) { // hide tooltip if mouse is not over the current element               
@@ -123,7 +132,9 @@
 				    }
 				})
 				/*
-					If the Esc key is used, add aria-hidden="true" to hide the tooltip, even if the mouse is hovering, or the owning element has focus.
+					Note:
+					If the Esc key is used, add aria-hidden="true" to hide the tooltip, 
+					even if the mouse is hovering, or the owning element has focus.
 				*/
 				.on('keyup', function(event) {         
 				    if(event.keyCode == ik_utils.keys.esc) { // hide when escape key is pressed

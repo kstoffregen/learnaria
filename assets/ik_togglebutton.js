@@ -29,6 +29,12 @@
 		
 		plugin = this;
 		id = 'toggle' + $('.ik_togglebutton').length; // generate unique id
+		/*
+			Note:
+			Add a tabindex to each button to make them keyboard focusable, 
+			define the role="button" and add a label with aria-label="[button name]" and 
+			set the default state to “not pressed” with aria-pressed="false".
+		*/
 		$elem = this.element
 			.attr({
 				"id": id,
@@ -40,6 +46,11 @@
 		
 		plugin.options.onToggle = plugin.options.onToggle.bind(plugin);
 		
+		/*
+			Note: 
+			Add in equivalent keyboard access where mouse access is provided, referencing 
+			the onActivate() function, described below, with jQuery .on('keydown').
+		*/
 		$elem
 			.on('click', {plugin: plugin}, plugin.onActivate)
 			.on('keydown', {plugin: plugin}, plugin.onActivate)
@@ -57,7 +68,13 @@
 	Plugin.prototype.onActivate = function (event) {
 		
 		var plugin, $me;
-		
+
+		/*
+			Note:
+			No added keyboard interaction is required for the toggle buttons beyond 
+			the standard space bar and Enter key defined in the ik_utils.js file. 
+			Reference to these key events is added to the onActivate() function.
+		*/
 		if (event.type === 'click' || event.keyCode === ik_utils.keys.enter || event.keyCode === ik_utils.keys.space) {
 			
 			event.stopPropagation();
@@ -65,6 +82,11 @@
 			plugin = event.data.plugin;
 			$me = plugin.element;
 			
+			/*
+				Note:
+				Set aria-pressed = "[true | false]" for buttons when activated or 
+				deactivated to announce the button’s state to screen readers.
+			*/
 			if (plugin.options.isPressed) {
 				$me
 					.removeClass('pressed')
