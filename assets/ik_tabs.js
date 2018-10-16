@@ -135,7 +135,7 @@
 			and we add tabindex="0" as the roving tabindex to make that tab focusable.
 		*/
 		$($tabs[ind]) // select specified tab
-			.addClass('selected');
+			.addClass('selected')
 		    .attr({
 		        'aria-selected': true,
 		        tabindex: 0
