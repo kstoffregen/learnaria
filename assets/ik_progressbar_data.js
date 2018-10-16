@@ -1,3 +1,7 @@
+/** Note: Built with JS workaround. Due to limited support for the WAI-ARIA progressbar attributes 
+	by screen readers other than ChromeVox, there is also a workaround using the jQuery .data() 
+	function to output the current value for users of JAWS or NVDA screen readers. **/
+
 ;(function ( $, window, document, undefined ) {
 	
 	var pluginName = 'ik_progressbar',
