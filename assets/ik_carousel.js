@@ -55,8 +55,10 @@
 			})
 			.addClass('ik_carousel')
     		.on('keydown', {'plugin': plugin}, plugin.onKeyDown)
-			.on('mouseenter', {'plugin': plugin}, plugin.stopTimer)
-			.on('mouseleave', {'plugin': plugin}, plugin.startTimer)
+			// .on('mouseenter', {'plugin': plugin}, plugin.stopTimer)
+			// .on('mouseleave', {'plugin': plugin}, plugin.startTimer)
+			.on('focusin mouseenter', {'plugin': plugin}, plugin.stopTimer)
+			.on('focusout mouseleave', {'plugin': plugin}, plugin.startTimer)
 		
 		/*
 			Note:
