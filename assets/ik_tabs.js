@@ -139,10 +139,11 @@
 		    .attr({
 		        'aria-selected': true,
 		        tabindex: 0
-		    });
+		    })
+		    .focus();	// move focus to current tab if reached by mouse or keyboard
 		
-		if (event.type) $($tabs[ind]).focus(); // move focus to current tab if reached by mouse or keyboard
-		
+		//if (event.type) $($tabs[ind]).focus(); // move focus to current tab if reached by mouse or keyboard
+
 		/*
 			Note:
 			As the tabs change, hide all the panels with aria-hidden="true" so screen readers do not see them, 
