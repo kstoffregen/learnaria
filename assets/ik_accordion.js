@@ -148,6 +148,7 @@
 		
 			isVisible = !!$panel.is(':visible');
 			$panel.slideToggle({ duration: plugin.options.animationSpeed });
+			$me.addClass('expanded').attr({"aria-expanded": true});
 			
 		}
 	};
