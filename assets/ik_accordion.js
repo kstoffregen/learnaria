@@ -150,11 +150,11 @@
 			$panel.slideToggle({ duration: plugin.options.animationSpeed });
 			
 			if(isVisible){
-				console.log("visible");
-				$me.addClass('expanded').attr({"aria-expanded": true});
-			} else {
-				console.log("not visible");
 				$me.removeClass('expanded').attr({"aria-expanded": false});
+				$panel.attr("aria-hidden": true);
+			} else {
+				$me.addClass('expanded').attr({"aria-expanded": true});
+				$panel.attr("aria-hidden": false);
 			}
 			
 			
