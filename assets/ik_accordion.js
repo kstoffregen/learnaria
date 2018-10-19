@@ -1,7 +1,7 @@
 ;(function ( $, window, document, undefined ) {
  	
 	var pluginName = 'ik_accordion',
-		defaults = { // set default parameters
+		defaults = {
 			autoCollapse: false,
 			animationSpeed: 200
 		};
@@ -76,16 +76,16 @@
 			
 			$me = $(el);
 			$btn = $('<div/>').attr({
-	        	'id': id + '_btn_' + i,
-	            'role': 'button',
-                'aria-controls': id + '_panel_' + i, // associate button with corresponding panel
-                'aria-expanded': false, // toggle expanded state
-                'tabindex': 0 //add keyboard focus
-	        })
-        .addClass('button')
-        .html($me.html())
-        .on('keydown', {'plugin': plugin}, plugin.onKeyDown) // enable keyboard navigation
-        .on('click', {'plugin': plugin}, plugin.togglePanel);
+		        	'id': id + '_btn_' + i,
+		            'role': 'button',
+	                'aria-controls': id + '_panel_' + i, // associate button with corresponding panel
+	                'aria-expanded': false, // toggle expanded state
+	                'tabindex': 0 //add keyboard focus
+		        })
+		        .addClass('button')
+		        .html($me.html())
+		        .on('keydown', {'plugin': plugin}, plugin.onKeyDown) // enable keyboard navigation
+		        .on('click', {'plugin': plugin}, plugin.togglePanel);
         
 			$me.empty().append($btn); // wrap content of each header in an element with role button
 		});
@@ -136,10 +136,10 @@
 				$btn = $hdr.find('.button');
 				
 				if($btn[0] != $(event.currentTarget)[0]) { 
-					$btn.removeClass('expanded');
+					$btn.removeClass('expanded').attr({'aria-expanded':false});
 					$hdr.next().slideUp(plugin.options.animationSpeed);
 				} else { 
-					$btn.addClass('expanded');
+					$btn.addClass('expanded').attr({'aria-expanded':true});
 					$hdr.next().slideDown(plugin.options.animationSpeed);
 				}
 			});
