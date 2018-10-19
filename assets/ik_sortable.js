@@ -37,15 +37,26 @@ var pluginName = "ik_sortable",
 			    'aria-labelledby': id + '_instructions'
 			})
 			.wrap('<div class="ik_sortable"></div>').before(plugin.temp);
-			
+		
+		$('<div/>') // add div element to be used with aria-describedby attribute of the menu
+		    .text(plugin.options.instructions) // get instruction text from plugin options
+		    .addClass('ik_readersonly') // hide element from visual display
+		    .attr({
+			    'id': id + '_instructions',
+			    'aria-hidden': 'true'  // hide element from screen readers to prevent it from being read twice
+			})
+		    .appendTo($elem);
+
 		total = $elem.children('li').length;
 			
 		plugin.items = $elem.children('li')
 			.each( function(i, el) {
-			
 				$(el).attr({
 					'draggable': true,
-					'id': id + '_' + i
+					'id': id + '_' + i,
+				    'role': 'listitem',
+				    'aria-label': $(el).text() + ' ' + (i + 1) + ' of ' + total + ' movable',
+				    'tabindex': i > 0 ? -1 : 0
 				});
 			})
 			.on('dragstart', {'plugin': plugin}, plugin.onDragStart)
@@ -56,14 +67,6 @@ var pluginName = "ik_sortable",
 			.on('dragleave', {'plugin': plugin}, plugin.onDragLeave)
 			.on('keydown', {'plugin': plugin}, plugin.onKeyDown);
 		
-		$('<div/>') // add div element to be used with aria-describedby attribute of the menu
-		    .text(plugin.options.instructions) // get instruction text from plugin options
-		    .addClass('ik_readersonly') // hide element from visual display
-		    .attr({
-			    'id': id + '_instructions',
-			    'aria-hidden': 'true'  // hide element from screen readers to prevent it from being read twice
-			})
-		    .appendTo($elem);		
 	};
 	
 	// dragged item
