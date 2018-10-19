@@ -151,10 +151,10 @@
 			
 			if(isVisible){
 				$me.removeClass('expanded').attr({"aria-expanded": false});
-				$panel.attr("aria-hidden": true);
+				$panel.attr({"aria-hidden": true});
 			} else {
 				$me.addClass('expanded').attr({"aria-expanded": true});
-				$panel.attr("aria-hidden": false);
+				$panel.attr({"aria-hidden": false});
 			}
 			
 			
